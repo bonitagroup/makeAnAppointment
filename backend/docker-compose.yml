@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clinic_app
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
