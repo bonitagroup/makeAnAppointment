@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import api from "../api/axios";
-import { useSetRecoilState } from "recoil";
-import { authAtom } from "../atoms/authAtom";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
-    const [form, setForm] = useState({ email: "", password: "" });
-    const setAuth = useSetRecoilState(authAtom);
+export default function Register() {
+    const [form, setForm] = useState({ name: "", email: "", password: "" });
     const [err, setErr] = useState("");
     const navigate = useNavigate();
 
@@ -14,22 +11,26 @@ export default function Login() {
         e.preventDefault();
         setErr("");
         try {
-            const { data } = await api.post("/auth/login", form);
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-            setAuth({ token: data.token, user: data.user });
-            navigate("/");
+            await api.post("/auth/register", form);
+            navigate("/login");
         } catch (e) {
-            setErr(e.response?.data?.message || "Login failed");
+            setErr(e.response?.data?.message || "Register failed");
         }
     };
 
     return (
         <div className="max-w-md mx-auto">
             <div className="bg-white p-6 rounded shadow">
-                <h2 className="text-xl font-semibold mb-4">Đăng nhập</h2>
+                <h2 className="text-xl font-semibold mb-4">Đăng ký</h2>
                 {err && <div className="text-red-600 mb-3">{err}</div>}
                 <form onSubmit={submit} className="space-y-3">
+                    <input
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        placeholder="Họ và tên"
+                        className="w-full p-3 border rounded"
+                        required
+                    />
                     <input
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -45,11 +46,8 @@ export default function Login() {
                         className="w-full p-3 border rounded"
                         required
                     />
-                    <button className="w-full py-3 bg-primary text-white rounded">Đăng nhập</button>
+                    <button className="w-full py-3 bg-primary text-white rounded">Đăng ký</button>
                 </form>
-                <div className="text-sm text-gray-500 mt-3">
-                    Chưa có tài khoản? <Link to="/register" className="text-primary">Đăng ký</Link>
-                </div>
             </div>
         </div>
     );

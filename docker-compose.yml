@@ -1,26 +1,40 @@
-version: "3.9"
+version: "3.8"
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "5000:5000"
-    env_file:
-      - ./backend/.env
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    depends_on:
-      - db
-
   db:
     image: mysql:8
+    container_name: myapp-db
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: clinic_app
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: myapp-backend
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root123
+      DB_NAME: clinic_app
+      JWT_SECRET: mysecretkey
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: myapp-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
   db_data:
