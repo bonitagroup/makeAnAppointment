@@ -1,27 +1,43 @@
-const { Doctor, Department, DoctorSchedule } = require("../models/index");
+const { Doctor, Department, Schedule } = require("../models");
 
 exports.list = async (req, res) => {
-    const { departmentId } = req.query;
-    const where = {};
-    if (departmentId) where.department_id = departmentId;
-    const doctors = await Doctor.findAll({ where });
-    res.json(doctors);
+    try {
+        const docs = await Doctor.findAll({ include: [{ model: Department, as: "department" }] });
+        res.json(docs);
+    } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+exports.get = async (req, res) => {
+    try {
+        const doc = await Doctor.findByPk(req.params.id, { include: [{ model: Department, as: "department" }, { model: Schedule, as: "schedules" }] });
+        if (!doc) return res.status(404).json({ message: "Not found" });
+        res.json(doc);
+    } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
 exports.create = async (req, res) => {
-    const { name, department_id, specialty, bio } = req.body;
-    const doctor = await Doctor.create({ name, department_id, specialty, bio });
-    res.json(doctor);
+    try {
+        const { name, title, bio, departmentId } = req.body;
+        if (!name) return res.status(400).json({ message: "Missing name" });
+        const doc = await Doctor.create({ name, title, bio, departmentId });
+        res.json(doc);
+    } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
-exports.getSchedules = async (req, res) => {
-    const { id } = req.params;
-    const schedules = await DoctorSchedule.findAll({ where: { doctor_id: id } });
-    res.json(schedules);
+exports.update = async (req, res) => {
+    try {
+        const doc = await Doctor.findByPk(req.params.id);
+        if (!doc) return res.status(404).json({ message: "Not found" });
+        await doc.update(req.body);
+        res.json(doc);
+    } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
-exports.createSchedule = async (req, res) => {
-    const { doctor_id, date, time_from, time_to, slot_duration, max_slots } = req.body;
-    const s = await DoctorSchedule.create({ doctor_id, date, time_from, time_to, slot_duration, max_slots });
-    res.json(s);
+exports.remove = async (req, res) => {
+    try {
+        const doc = await Doctor.findByPk(req.params.id);
+        if (!doc) return res.status(404).json({ message: "Not found" });
+        await doc.destroy();
+        res.json({ message: "Deleted" });
+    } catch (err) { res.status(500).json({ message: err.message }); }
 };

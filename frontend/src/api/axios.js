@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.1.7:5000/api";
 
 const api = axios.create({
     baseURL: API_URL,
@@ -11,7 +11,7 @@ api.interceptors.request.use((cfg) => {
     try {
         const t = localStorage.getItem("token");
         if (t) cfg.headers.Authorization = `Bearer ${t}`;
-    } catch (e) { }
+    } catch { }
     return cfg;
 });
 

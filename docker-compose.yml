@@ -2,39 +2,34 @@ version: "3.8"
 services:
   db:
     image: mysql:8
-    container_name: myapp-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: clinic_app
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clinicdb
+      MYSQL_USER: clinic_user
+      MYSQL_PASSWORD: clinic_pass
     ports:
       - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
 
   backend:
     build: ./backend
-    container_name: myapp-backend
     restart: always
-    environment:
-      DB_HOST: db
-      DB_USER: root
-      DB_PASSWORD: root123
-      DB_NAME: clinic_app
-      JWT_SECRET: mysecretkey
     ports:
       - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: clinic_user
+      DB_PASSWORD: clinic_pass
+      DB_NAME: clinicdb
+      JWT_SECRET: supersecret
+      JWT_EXPIRES_IN: 7d
     depends_on:
       - db
 
   frontend:
     build: ./frontend
-    container_name: myapp-frontend
     restart: always
     ports:
-      - "3000:80"
-    depends_on:
-      - backend
-
-volumes:
-  db_data:
+      - "8000:80"

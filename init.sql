@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS clinicdb;
+
+CREATE USER IF NOT EXISTS 'clinicuser'@'%' IDENTIFIED BY 'clinicpass';
+
+GRANT ALL PRIVILEGES ON clinicdb.* TO 'clinicuser'@'%';
+
+FLUSH PRIVILEGES;

@@ -5,12 +5,12 @@ require("dotenv").config({ path: __dirname + "/../../.env" });
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, phone } = req.body;
+        const { name, email, password } = req.body;
         if (!email || !password || !name) return res.status(400).json({ message: "Missing fields" });
         const exist = await User.findOne({ where: { email } });
         if (exist) return res.status(400).json({ message: "Email already used" });
         const hash = await bcrypt.hash(password, 10);
-        const user = await User.create({ name, email, password: hash, phone });
+        const user = await User.create({ name, email, password: hash });
         const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
         res.json({ user: { id: user.id, name: user.name, email: user.email }, token });
     } catch (err) {

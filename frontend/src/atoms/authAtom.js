@@ -7,6 +7,7 @@ export const authAtom = atom({
     key: "authAtom",
     default: {
         token,
-        user
+        user,
+        isAuthenticated: !!token
     }
 });

@@ -16,7 +16,9 @@ services:
     image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: clinic_app
+      MYSQL_DATABASE: clinicdb
+      MYSQL_USER: clinic_user
+      MYSQL_PASSWORD: clinic_pass
     ports:
       - "3306:3306"
     volumes:

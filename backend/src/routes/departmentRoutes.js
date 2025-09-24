@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { list, create } = require("../controllers/departmentController");
-const auth = require("../middlewares/authMiddleware");
+const ctrl = require("../controllers/departmentController");
 
-router.get("/", list);
-router.post("/", auth, create); // admin only ideally; simplified here
+router.get("/", ctrl.list);
+router.get("/:id", ctrl.get);
+router.post("/", ctrl.create);
+router.put("/:id", ctrl.update);
+router.delete("/:id", ctrl.remove);
 
 module.exports = router;

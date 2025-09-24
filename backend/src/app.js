@@ -9,6 +9,8 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const vaccineRoutes = require("./routes/vaccineRoutes");
 const injectionRoutes = require("./routes/injectionRoutes");
 
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -21,6 +23,10 @@ app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/vaccines", vaccineRoutes);
 app.use("/api/injections", injectionRoutes);
+app.use("/api/departments", require("./routes/departmentRoutes"));
+app.use("/api/doctors", require("./routes/doctorRoutes"));
+app.use("/api/schedules", require("./routes/scheduleRoutes"));
+
 
 sequelize.sync({ alter: true })
     .then(() => console.log("Database synced"))
