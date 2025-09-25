@@ -9,6 +9,7 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const vaccineRoutes = require("./routes/vaccineRoutes");
 const injectionRoutes = require("./routes/injectionRoutes");
 const scheduleRoutes = require("./routes/scheduleRoutes");
+const patientRoutes = require("./routes/patientRoutes");
 
 
 
@@ -25,6 +26,7 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/vaccines", vaccineRoutes);
 app.use("/api/injections", injectionRoutes);
 app.use("/api/schedules", scheduleRoutes);
+app.use("/api/patients", patientRoutes);
 
 
 sequelize.sync({ alter: true })

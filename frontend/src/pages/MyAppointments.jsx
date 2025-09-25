@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import dayjs from "dayjs";
 import Loading from "../components/Loading";
 
 export default function MyAppointments() {
@@ -7,24 +8,25 @@ export default function MyAppointments() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // For demo we use patientId=1; ideally fetch from profile
-        api.get("/appointments/patient/1").then(r => setList(r.data || [])).catch(() => { }).finally(() => setLoading(false));
+        // Lấy lịch đã đăng ký của user (demo: patient_id=1)
+        api.get("/appointments/patient/1").then(r => setList(r.data || [])).catch(() => setList([])).finally(() => setLoading(false));
     }, []);
 
     if (loading) return <Loading />;
 
     return (
-        <div className="container py-6">
-            <h3 className="text-xl font-semibold mb-4">Lịch hẹn của tôi</h3>
+        <div className="container py-6 max-w-2xl">
+            <h3 className="font-semibold mb-4">Lịch khám của bạn</h3>
+            {list.length === 0 && <div>Chưa có lịch khám nào.</div>}
             <div className="space-y-3">
-                {list.length === 0 && <div className="text-gray-500">Bạn chưa có lịch hẹn.</div>}
                 {list.map(a => (
-                    <div key={a.id} className="card flex justify-between items-center">
-                        <div>
-                            <div className="font-semibold">Bác sĩ ID: {a.doctor_id}</div>
-                            <div className="text-sm text-gray-500">Ngày: {a.date} • Giờ: {a.time}</div>
-                        </div>
+                    <div key={a.id} className="card p-3">
+                        <div className="font-semibold">Bác sĩ: {a.doctor?.name || `#${a.doctor_id}`}</div>
                         <div className="text-sm text-gray-600">
+                            Ngày: {dayjs(a.date).format("DD/MM/YYYY")} • Giờ: {a.time}
+                        </div>
+                        <div className="text-xs text-gray-500">Triệu chứng: {a.symptoms || "-"}</div>
+                        <div className="text-xs text-gray-500">
                             Trạng thái: {a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : a.status}
                             {a.status === "approved" && <span className="ml-2 text-green-600 font-semibold">✔ Đã duyệt!</span>}
                         </div>

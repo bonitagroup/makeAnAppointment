@@ -9,6 +9,7 @@ export default function Appointment() {
     const [form, setForm] = useState({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
     const [msg, setMsg] = useState("");
     const [loading, setLoading] = useState(true);
+    const [patientId, setPatientId] = useState(null);
 
     const loc = useLocation();
     useEffect(() => {
@@ -17,6 +18,16 @@ export default function Appointment() {
             setDeps(a.data || []);
             setDoctors(b.data || []);
         }).catch(() => { }).finally(() => setLoading(false));
+
+        // Lấy patient_id từ user hiện tại
+        api.get("/user/me").then(r => {
+            const userId = r.data?.id;
+            if (userId) {
+                api.get(`/patients?user_id=${userId}`).then(res => {
+                    if (res.data && res.data.length > 0) setPatientId(res.data[0].id);
+                });
+            }
+        });
 
         // prefilling if query params
         const qp = new URLSearchParams(loc.search);
@@ -29,9 +40,8 @@ export default function Appointment() {
         e.preventDefault();
         setMsg("");
         try {
-            // patient_id: for demo use 1 (you should fetch patient's id from profile)
             await api.post("/appointments", {
-                patient_id: 1,
+                patient_id: patientId,
                 doctor_id: form.doctorId,
                 date: form.date,
                 time: form.time,
@@ -59,7 +69,9 @@ export default function Appointment() {
 
                     <select className="w-full p-3 border rounded" value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>
                         <option value="">Chọn bác sĩ</option>
-                        {doctors.filter(doc => !form.departmentId || doc.department_id == form.departmentId).map(d => <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>)}
+                        {doctors
+                            .filter(doc => !form.departmentId || doc.department_id == form.departmentId || doc.departmentId == form.departmentId)
+                            .map(d => <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>)}
                     </select>
 
                     <input type="date" className="w-full p-3 border rounded" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />

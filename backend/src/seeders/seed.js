@@ -1,4 +1,4 @@
-const { sequelize, User, Department, Doctor, DoctorSchedule, Vaccine } = require("../models/index");
+const { sequelize, User, Department, Doctor, DoctorSchedule, Vaccine, Patient } = require("../models/index");
 const bcrypt = require("bcrypt");
 
 async function seed() {
@@ -21,6 +21,12 @@ async function seed() {
 
         await Vaccine.findOrCreate({ where: { name: "Vaccine A" }, defaults: { doses_required: 2, interval_days: 30 } });
         await Vaccine.findOrCreate({ where: { name: "Vaccine B" }, defaults: { doses_required: 1, interval_days: 0 } });
+
+        const demoUser = await User.findOne({ where: { email: "demo@local" } });
+        await Patient.findOrCreate({
+            where: { user_id: demoUser.id, name: "Demo Patient" },
+            defaults: { dob: "2000-01-01", gender: "M", relation: "self" }
+        });
 
         console.log("Seed done.");
         process.exit(0);
