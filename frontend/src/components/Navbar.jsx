@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { useState } from "react";
 import { authAtom } from "@/atoms/authAtom";
@@ -7,6 +7,7 @@ export default function Navbar() {
     const [auth, setAuth] = useRecoilState(authAtom);
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const location = useLocation();
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -14,6 +15,9 @@ export default function Navbar() {
         setAuth({ token: null, user: null, isAuthenticated: false });
         navigate("/login");
     };
+
+    // Ẩn Navbar khi đang ở trang admin
+    if (location.pathname.startsWith("/admin")) return null;
 
     return (
         <header className="bg-white shadow-sm">
@@ -36,7 +40,9 @@ export default function Navbar() {
                     <Link to="/departments" className="text-sm text-gray-700 hover:text-primary">Khoa</Link>
                     <Link to="/appointment" className="text-sm text-gray-700 hover:text-primary">Đặt lịch</Link>
                     <Link to="/vaccination" className="text-sm text-gray-700 hover:text-primary">Tiêm chủng</Link>
-
+                    {auth.isAuthenticated && auth.user?.role === "admin" && (
+                        <Link to="/admin" className="text-sm px-3 py-1.5 bg-gray-800 text-white rounded hover:bg-primary transition">Quản trị</Link>
+                    )}
                     {auth.isAuthenticated ? (
                         <>
                             <Link to="/my-appointments" className="px-3 py-1.5 text-sm border rounded">
@@ -68,7 +74,9 @@ export default function Navbar() {
                     <Link to="/departments" className="text-sm text-gray-700 hover:text-primary">Khoa</Link>
                     <Link to="/appointment" className="text-sm text-gray-700 hover:text-primary">Đặt lịch</Link>
                     <Link to="/vaccination" className="text-sm text-gray-700 hover:text-primary">Tiêm chủng</Link>
-
+                    {auth.isAuthenticated && auth.user?.role === "admin" && (
+                        <Link to="/admin" className="text-sm px-3 py-1.5 bg-gray-800 text-white rounded hover:bg-primary transition">Quản trị</Link>
+                    )}
                     {auth.isAuthenticated ? (
                         <>
                             <Link to="/my-appointments" className="px-3 py-1.5 text-sm border rounded">

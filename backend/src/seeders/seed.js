@@ -8,6 +8,8 @@ async function seed() {
 
         const pass = await bcrypt.hash("password123", 10);
         await User.findOrCreate({ where: { email: "demo@local" }, defaults: { name: "Demo User", password: pass, phone: "0123456789" } });
+        const adminPass = await bcrypt.hash("admin123", 10);
+        await User.upsert({ name: "Admin", email: "admin@local", password: adminPass, role: "admin" });
 
         const [dep1] = await Department.findOrCreate({ where: { name: "Nội tổng hợp" } });
         const [dep2] = await Department.findOrCreate({ where: { name: "Ngoại" } });

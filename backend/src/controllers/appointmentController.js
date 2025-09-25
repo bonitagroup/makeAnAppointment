@@ -39,3 +39,25 @@ exports.cancel = async (req, res) => {
     await appt.save();
     res.json(appt);
 };
+
+exports.list = async (req, res) => {
+    // Trả về tất cả lịch hẹn, kèm thông tin bác sĩ và bệnh nhân
+    const appts = await ApptModel.findAll({
+        include: [
+            { model: require("../models").Doctor, as: "doctor" },
+            { model: require("../models").Patient, as: "patient" }
+        ],
+        order: [["date", "DESC"], ["time", "ASC"]]
+    });
+    res.json(appts);
+};
+
+exports.approve = async (req, res) => {
+    const { id } = req.params;
+    const appt = await ApptModel.findByPk(id);
+    if (!appt) return res.status(404).json({ message: "Not found" });
+    appt.status = "approved";
+    await appt.save();
+    // TODO: gửi thông báo cho bệnh nhân (có thể tích hợp email hoặc push notification)
+    res.json(appt);
+};

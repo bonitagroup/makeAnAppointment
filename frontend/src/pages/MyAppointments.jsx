@@ -24,7 +24,10 @@ export default function MyAppointments() {
                             <div className="font-semibold">Bác sĩ ID: {a.doctor_id}</div>
                             <div className="text-sm text-gray-500">Ngày: {a.date} • Giờ: {a.time}</div>
                         </div>
-                        <div className="text-sm text-gray-600">Trạng thái: {a.status}</div>
+                        <div className="text-sm text-gray-600">
+                            Trạng thái: {a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : a.status}
+                            {a.status === "approved" && <span className="ml-2 text-green-600 font-semibold">✔ Đã duyệt!</span>}
+                        </div>
                     </div>
                 ))}
             </div>

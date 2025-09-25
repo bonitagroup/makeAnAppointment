@@ -1,0 +1,69 @@
+import { useEffect, useState } from "react";
+import api from "@/api/axios";
+import dayjs from "dayjs";
+
+export default function SchedulesAdmin() {
+    const [appointments, setAppointments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [msg, setMsg] = useState("");
+
+    const loadAppointments = async () => {
+        setLoading(true);
+        try {
+            const res = await api.get("/appointments");
+            setAppointments(res.data);
+        } catch {
+            setAppointments([]);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        loadAppointments();
+    }, []);
+
+    const approve = async (id) => {
+        setMsg("");
+        try {
+            await api.put(`/appointments/${id}/approve`);
+            setMsg("Duyệt thành công, đã gửi thông báo cho bệnh nhân.");
+            loadAppointments();
+        } catch {
+            setMsg("Lỗi duyệt lịch.");
+        }
+    };
+
+    return (
+        <div className="p-4 max-w-4xl">
+            <h2 className="text-xl font-bold mb-4">Quản lý Lịch hẹn bệnh nhân</h2>
+            {msg && <div className="mb-3 text-green-600">{msg}</div>}
+            {loading ? (
+                <div>Đang tải...</div>
+            ) : (
+                <div className="space-y-2">
+                    {appointments.length === 0 && <div>Chưa có lịch hẹn nào.</div>}
+                    {appointments.map(a => (
+                        <div key={a.id} className="p-3 bg-white rounded shadow flex flex-col md:flex-row md:justify-between md:items-center">
+                            <div>
+                                <div className="font-semibold">{a.patient?.name || `Bệnh nhân #${a.patient_id}`}</div>
+                                <div className="text-sm text-gray-600">
+                                    Bác sĩ: {a.doctor?.name || `#${a.doctor_id}`} • Ngày: {dayjs(a.date).format("DD/MM/YYYY")} • Giờ: {a.time}
+                                </div>
+                                <div className="text-xs text-gray-500">Triệu chứng: {a.symptoms || "-"}</div>
+                                <div className="text-xs text-gray-500">
+                                    Trạng thái: {a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : a.status}
+                                    {a.status === "approved" && <span className="ml-2 text-green-600 font-semibold">✔ Đã duyệt!</span>}
+                                </div>
+                            </div>
+                            <div className="flex gap-2 mt-2 md:mt-0">
+                                {a.status === "pending" && (
+                                    <button onClick={() => approve(a.id)} className="px-3 py-1 bg-green-600 text-white rounded">Duyệt</button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
