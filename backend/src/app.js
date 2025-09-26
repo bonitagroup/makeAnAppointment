@@ -10,6 +10,7 @@ const vaccineRoutes = require("./routes/vaccineRoutes");
 const injectionRoutes = require("./routes/injectionRoutes");
 const scheduleRoutes = require("./routes/scheduleRoutes");
 const patientRoutes = require("./routes/patientRoutes");
+const userAdminRoutes = require("./routes/userAdminRoutes");
 
 
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.get("/", (req, res) => res.json({ message: "API running" }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
@@ -27,6 +29,7 @@ app.use("/api/vaccines", vaccineRoutes);
 app.use("/api/injections", injectionRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/patients", patientRoutes);
+app.use("/api/admin/users", userAdminRoutes);
 
 
 sequelize.sync({ alter: true })

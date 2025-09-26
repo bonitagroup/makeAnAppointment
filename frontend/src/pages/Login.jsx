@@ -31,7 +31,7 @@ export default function Login() {
     return (
         <div className="container py-8 max-w-md">
             <div className="card">
-                <h2 className="text-xl font-semibold mb-4">Đăng nhập</h2>
+                <h2 className="text-xl font-semibold mb-4 text-white">Đăng nhập</h2>
                 {err && <div className="text-red-600 mb-3">{err}</div>}
                 <form onSubmit={submit} className="space-y-3">
                     <input className="w-full p-3 border rounded" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />

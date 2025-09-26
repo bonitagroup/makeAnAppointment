@@ -13,35 +13,35 @@ const VaccineRecord = require("./VaccineRecord");
 const Payment = require("./Payment");
 
 // Associations
-User.hasMany(Patient, { foreignKey: "user_id" });
-Patient.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(Patient, { foreignKey: "user_id", as: "patients" });
+Patient.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
-Department.hasMany(Doctor, { foreignKey: "department_id" });
-Doctor.belongsTo(Department, { foreignKey: "department_id" });
+Department.hasMany(Doctor, { foreignKey: "department_id", as: "doctors" });
+Doctor.belongsTo(Department, { foreignKey: "department_id", as: "department" });
 
-Doctor.hasMany(DoctorSchedule, { foreignKey: "doctor_id" });
-DoctorSchedule.belongsTo(Doctor, { foreignKey: "doctor_id" });
+Doctor.hasMany(DoctorSchedule, { foreignKey: "doctor_id", as: "schedules" });
+DoctorSchedule.belongsTo(Doctor, { foreignKey: "doctor_id", as: "doctor" });
 
-Patient.hasMany(Appointment, { foreignKey: "patient_id" });
-Appointment.belongsTo(Patient, { foreignKey: "patient_id" });
-Doctor.hasMany(Appointment, { foreignKey: "doctor_id" });
-Appointment.belongsTo(Doctor, { foreignKey: "doctor_id" });
+Patient.hasMany(Appointment, { foreignKey: "patient_id", as: "appointments" });
+Appointment.belongsTo(Patient, { foreignKey: "patient_id", as: "patient" });
+Doctor.hasMany(Appointment, { foreignKey: "doctor_id", as: "appointments" });
+Appointment.belongsTo(Doctor, { foreignKey: "doctor_id", as: "doctor" });
 
-Patient.hasMany(MedicalRecord, { foreignKey: "patient_id" });
-MedicalRecord.belongsTo(Patient, { foreignKey: "patient_id" });
+Patient.hasMany(MedicalRecord, { foreignKey: "patient_id", as: "medicalRecords" });
+MedicalRecord.belongsTo(Patient, { foreignKey: "patient_id", as: "patient" });
 
-Vaccine.hasMany(InjectionAppointment, { foreignKey: "vaccine_id" });
-InjectionAppointment.belongsTo(Vaccine, { foreignKey: "vaccine_id" });
-Patient.hasMany(InjectionAppointment, { foreignKey: "patient_id" });
-InjectionAppointment.belongsTo(Patient, { foreignKey: "patient_id" });
+Vaccine.hasMany(InjectionAppointment, { foreignKey: "vaccine_id", as: "injectionAppointments" });
+InjectionAppointment.belongsTo(Vaccine, { foreignKey: "vaccine_id", as: "vaccine" });
+Patient.hasMany(InjectionAppointment, { foreignKey: "patient_id", as: "injectionAppointments" });
+InjectionAppointment.belongsTo(Patient, { foreignKey: "patient_id", as: "patient" });
 
-Patient.hasMany(VaccineRecord, { foreignKey: "patient_id" });
-VaccineRecord.belongsTo(Patient, { foreignKey: "patient_id" });
-Vaccine.hasMany(VaccineRecord, { foreignKey: "vaccine_id" });
-VaccineRecord.belongsTo(Vaccine, { foreignKey: "vaccine_id" });
+Patient.hasMany(VaccineRecord, { foreignKey: "patient_id", as: "vaccineRecords" });
+VaccineRecord.belongsTo(Patient, { foreignKey: "patient_id", as: "patient" });
+Vaccine.hasMany(VaccineRecord, { foreignKey: "vaccine_id", as: "vaccineRecords" });
+VaccineRecord.belongsTo(Vaccine, { foreignKey: "vaccine_id", as: "vaccine" });
 
-Appointment.hasOne(Payment, { foreignKey: "appointment_id" });
-Payment.belongsTo(Appointment, { foreignKey: "appointment_id" });
+Appointment.hasOne(Payment, { foreignKey: "appointment_id", as: "payment" });
+Payment.belongsTo(Appointment, { foreignKey: "appointment_id", as: "appointment" });
 
 module.exports = {
     sequelize,

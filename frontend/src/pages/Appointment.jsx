@@ -8,37 +8,101 @@ export default function Appointment() {
     const [doctors, setDoctors] = useState([]);
     const [form, setForm] = useState({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
     const [msg, setMsg] = useState("");
+    const [msgType, setMsgType] = useState(""); // "success" | "error"
     const [loading, setLoading] = useState(true);
     const [patientId, setPatientId] = useState(null);
+    const [phone, setPhone] = useState("");
 
     const loc = useLocation();
+
     useEffect(() => {
         // fetch deps & doctors
-        Promise.all([api.get("/departments"), api.get("/doctors")]).then(([a, b]) => {
-            setDeps(a.data || []);
-            setDoctors(b.data || []);
-        }).catch(() => { }).finally(() => setLoading(false));
+        Promise.all([api.get("/departments"), api.get("/doctors")])
+            .then(([a, b]) => {
+                setDeps(Array.isArray(a.data) ? a.data : []);
+                setDoctors(Array.isArray(b.data) ? b.data : []);
+            })
+            .catch(() => { })
+            .finally(() => setLoading(false));
 
-        // Lấy patient_id từ user hiện tại
-        api.get("/user/me").then(r => {
-            const userId = r.data?.id;
-            if (userId) {
-                api.get(`/patients?user_id=${userId}`).then(res => {
-                    if (res.data && res.data.length > 0) setPatientId(res.data[0].id);
-                });
-            }
-        });
+        // lấy user từ localStorage
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        if (!user || !user.id) {
+            setPatientId(null);
+            return;
+        }
+
+        // tìm patient theo user_id
+        api.get(`/patients?user_id=${user.id}`)
+            .then(res => {
+                if (Array.isArray(res.data) && res.data.length > 0) {
+                    setPatientId(res.data[0].id);
+                } else if (res.data && typeof res.data === "object" && res.data.id) {
+                    setPatientId(res.data.id);
+                } else {
+                    // nếu chưa có patient thì tạo mới
+                    api.post("/patients", {
+                        user_id: user.id,
+                        name: user.name,
+                        phone: user.phone || "",
+                        dob: "2000-01-01",
+                        gender: "O",
+                        relation: "self"
+                    }).then(r => {
+                        if (r.data && r.data.id) setPatientId(r.data.id);
+                        else setPatientId(null);
+                    }).catch(() => setPatientId(null));
+                }
+            })
+            .catch(() => setPatientId(null));
 
         // prefilling if query params
         const qp = new URLSearchParams(loc.search);
         const doctor = qp.get("doctor");
         const dept = qp.get("dept");
-        setForm(prev => ({ ...prev, doctorId: doctor || prev.doctorId, departmentId: dept || prev.departmentId }));
-    }, []);
+        setForm(prev => ({
+            ...prev,
+            doctorId: doctor || prev.doctorId,
+            departmentId: dept || prev.departmentId
+        }));
+    }, [loc.search]);
 
     const submit = async (e) => {
         e.preventDefault();
         setMsg("");
+        setMsgType("");
+
+        if (!patientId) {
+            setMsg("Vui lòng đăng nhập lại hoặc kiểm tra tài khoản.");
+            setMsgType("error");
+            return;
+        }
+        if (!phone) {
+            setMsg("Vui lòng nhập số điện thoại.");
+            setMsgType("error");
+            return;
+        }
+        if (!form.departmentId) {
+            setMsg("Vui lòng chọn khoa.");
+            setMsgType("error");
+            return;
+        }
+        if (!form.doctorId) {
+            setMsg("Vui lòng chọn bác sĩ.");
+            setMsgType("error");
+            return;
+        }
+        if (!form.date) {
+            setMsg("Vui lòng chọn ngày khám.");
+            setMsgType("error");
+            return;
+        }
+        if (!form.time) {
+            setMsg("Vui lòng chọn giờ khám.");
+            setMsgType("error");
+            return;
+        }
+
         try {
             await api.post("/appointments", {
                 patient_id: patientId,
@@ -46,11 +110,16 @@ export default function Appointment() {
                 date: form.date,
                 time: form.time,
                 symptoms: form.symptoms,
-                department_id: form.departmentId
+                department_id: form.departmentId,
+                phone
             });
             setMsg("Đặt lịch thành công");
+            setMsgType("success");
+            setForm({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
+            setPhone("");
         } catch (err) {
             setMsg(err.response?.data?.message || "Lỗi đặt lịch");
+            setMsgType("error");
         }
     };
 
@@ -59,19 +128,43 @@ export default function Appointment() {
     return (
         <div className="container py-6 max-w-2xl">
             <div className="card">
-                <h3 className="font-semibold mb-3">Đặt lịch khám</h3>
-                {msg && <div className="text-sm text-green-600 mb-3">{msg}</div>}
+                <h3 className="font-semibold mb-3 text-white">Đặt lịch khám</h3>
+                {msg && (
+                    <div className={`text-sm mb-3 ${msgType === "success" ? "text-green-600" : "text-red-600"}`}>
+                        {msg}
+                    </div>
+                )}
                 <form onSubmit={submit} className="space-y-3">
-                    <select className="w-full p-3 border rounded" value={form.departmentId} onChange={(e) => setForm({ ...form, departmentId: e.target.value })}>
+                    <input
+                        type="text"
+                        className="w-full p-3 border rounded"
+                        placeholder="Số điện thoại"
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
+                        required
+                    />
+                    <select
+                        className="w-full p-3 border rounded"
+                        value={form.departmentId}
+                        onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
+                    >
                         <option value="">Chọn khoa</option>
-                        {deps.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        {deps.length > 0
+                            ? deps.map(d => <option key={d.id} value={d.id}>{d.name}</option>)
+                            : <option disabled>Không có khoa</option>}
                     </select>
 
-                    <select className="w-full p-3 border rounded" value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>
+                    <select
+                        className="w-full p-3 border rounded"
+                        value={form.doctorId}
+                        onChange={(e) => setForm({ ...form, doctorId: e.target.value })}
+                    >
                         <option value="">Chọn bác sĩ</option>
-                        {doctors
-                            .filter(doc => !form.departmentId || doc.department_id == form.departmentId || doc.departmentId == form.departmentId)
-                            .map(d => <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>)}
+                        {doctors.length > 0
+                            ? doctors
+                                .filter(doc => !form.departmentId || String(doc.department_id) === String(form.departmentId))
+                                .map(d => <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>)
+                            : <option disabled>Không có bác sĩ</option>}
                     </select>
 
                     <input type="date" className="w-full p-3 border rounded" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />

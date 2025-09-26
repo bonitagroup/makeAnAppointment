@@ -1,15 +1,15 @@
-const { Department, Doctor } = require("../models");
+const { Department } = require("../models");
 
 exports.list = async (req, res) => {
     try {
-        const list = await Department.findAll({ include: [{ model: Doctor, as: "doctors" }] });
+        const list = await Department.findAll();
         res.json(list);
     } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
 exports.get = async (req, res) => {
     try {
-        const dep = await Department.findByPk(req.params.id, { include: [{ model: Doctor, as: "doctors" }] });
+        const dep = await Department.findByPk(req.params.id);
         if (!dep) return res.status(404).json({ message: "Not found" });
         res.json(dep);
     } catch (err) { res.status(500).json({ message: err.message }); }

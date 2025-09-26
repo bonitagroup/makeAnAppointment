@@ -1,8 +1,8 @@
-const { Doctor, Department, Schedule } = require("../models");
+const { Doctor } = require("../models");
 
 exports.list = async (req, res) => {
     try {
-        const docs = await Doctor.findAll({ include: [{ model: Department, as: "department" }] });
+        const docs = await Doctor.findAll();
         res.json(docs);
     } catch (err) { res.status(500).json({ message: err.message }); }
 };

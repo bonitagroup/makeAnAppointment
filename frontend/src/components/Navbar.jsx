@@ -40,6 +40,9 @@ export default function Navbar() {
                     <Link to="/departments" className="text-sm text-gray-700 hover:text-primary">Khoa</Link>
                     <Link to="/appointment" className="text-sm text-gray-700 hover:text-primary">Đặt lịch</Link>
                     <Link to="/vaccination" className="text-sm text-gray-700 hover:text-primary">Tiêm chủng</Link>
+                    {auth.isAuthenticated && (
+                        <Link to="/profile" className="text-sm text-gray-700 hover:text-primary">Hồ sơ</Link>
+                    )}
                     {auth.isAuthenticated && auth.user?.role === "admin" && (
                         <Link to="/admin" className="text-sm px-3 py-1.5 bg-gray-800 text-white rounded hover:bg-primary transition">Quản trị</Link>
                     )}
@@ -74,6 +77,9 @@ export default function Navbar() {
                     <Link to="/departments" className="text-sm text-gray-700 hover:text-primary">Khoa</Link>
                     <Link to="/appointment" className="text-sm text-gray-700 hover:text-primary">Đặt lịch</Link>
                     <Link to="/vaccination" className="text-sm text-gray-700 hover:text-primary">Tiêm chủng</Link>
+                    {auth.isAuthenticated && (
+                        <Link to="/profile" className="text-sm text-gray-700 hover:text-primary">Hồ sơ</Link>
+                    )}
                     {auth.isAuthenticated && auth.user?.role === "admin" && (
                         <Link to="/admin" className="text-sm px-3 py-1.5 bg-gray-800 text-white rounded hover:bg-primary transition">Quản trị</Link>
                     )}

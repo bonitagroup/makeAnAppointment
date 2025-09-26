@@ -1,38 +1,60 @@
 // src/components/AdminNavbar.js
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function AdminNavbar() {
     const location = useLocation();
+    const navigate = useNavigate();
     const isActive = (path) => location.pathname === path;
 
     return (
-        <nav className="bg-gray-900 text-white px-4 py-2 flex flex-wrap items-center gap-2 shadow mb-4 rounded-b-lg">
-            <div className="flex gap-2 flex-1 min-w-0">
+        <nav className="bg-gray-900 text-white px-2 py-2 flex flex-col gap-2 shadow mb-4 rounded-b-lg">
+            {/* Mũi tên về trang chủ và tiêu đề */}
+            <div className="flex items-center mb-2">
+                <button
+                    onClick={() => navigate("/")}
+                    className="mr-2 text-white text-xl px-2 py-1 rounded hover:bg-gray-700 flex-shrink-0"
+                    aria-label="Về trang người dùng"
+                >
+                    {/* Mũi tên trái SVG */}
+                    <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <span className="font-bold text-base sm:text-lg md:text-xl truncate max-w-[70vw] overflow-hidden whitespace-nowrap">Quản trị</span>
+            </div>
+            {/* Các nút chức năng: luôn nằm trên 1 dòng, khoảng cách vừa phải */}
+            <div className="flex flex-row flex-wrap gap-1 flex-1 min-w-0 mt-2">
+                <Link
+                    to="/admin/approved-schedules"
+                    className={`font-medium px-2 py-1 rounded transition whitespace-nowrap
+                        text-sm lg:text-base
+                        ${isActive("/admin/approved-schedules") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
+                >
+                    Lịch đã duyệt
+                </Link>
                 <Link
                     to="/admin/departments"
-                    className={`text-xs sm:text-sm font-medium px-3 py-1 rounded transition whitespace-nowrap ${isActive("/admin/departments") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
+                    className={`font-medium px-2 py-1 rounded transition whitespace-nowrap
+                        text-sm lg:text-base
+                        ${isActive("/admin/departments") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
                 >
                     Quản lý Khoa
                 </Link>
                 <Link
                     to="/admin/doctors"
-                    className={`text-xs sm:text-sm font-medium px-3 py-1 rounded transition whitespace-nowrap ${isActive("/admin/doctors") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
+                    className={`font-medium px-2 py-1 rounded transition whitespace-nowrap
+                        text-sm lg:text-base
+                        ${isActive("/admin/doctors") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
                 >
-                    Quản lý Bác sĩ
+                    Bác sĩ
                 </Link>
                 <Link
                     to="/admin/schedules"
-                    className={`text-xs sm:text-sm font-medium px-3 py-1 rounded transition whitespace-nowrap ${isActive("/admin/schedules") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
+                    className={`font-medium px-2 py-1 rounded transition whitespace-nowrap
+                        text-sm lg:text-base
+                        ${isActive("/admin/schedules") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
                 >
-                    Quản lý Lịch khám
-                </Link>
-            </div>
-            <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0 sm:ml-auto">
-                <Link
-                    to="/"
-                    className="block text-xs sm:text-sm font-medium px-3 py-1 rounded bg-gray-700 hover:bg-primary transition text-center"
-                >
-                    Về trang người dùng
+                    Lịch khám
                 </Link>
             </div>
         </nav>

@@ -3,13 +3,17 @@ const sequelize = require("../config/database");
 
 const Appointment = sequelize.define("appointment", {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    patient_id: { type: DataTypes.INTEGER },
-    doctor_id: { type: DataTypes.INTEGER },
+    patient_id: { type: DataTypes.INTEGER, allowNull: false },
+    doctor_id: { type: DataTypes.INTEGER, allowNull: false },
+    date: { type: DataTypes.DATEONLY, allowNull: false },
+    time: { type: DataTypes.TIME, allowNull: false },
+    symptoms: { type: DataTypes.STRING },
     department_id: { type: DataTypes.INTEGER },
-    date: { type: DataTypes.DATEONLY },
-    time: { type: DataTypes.TIME },
-    status: { type: DataTypes.ENUM("pending", "confirmed", "completed", "cancelled"), defaultValue: "pending" },
-    symptoms: { type: DataTypes.TEXT }
+    phone: { type: DataTypes.STRING, allowNull: false }, // Thêm trường phone
+    status: { type: DataTypes.ENUM("pending", "approved", "rejected", "cancelled"), defaultValue: "pending" }
+}, {
+    tableName: "appointments",
+    timestamps: true
 });
 
 module.exports = Appointment;

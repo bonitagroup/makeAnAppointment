@@ -25,13 +25,13 @@ export default function Vaccination() {
 
     return (
         <div className="container py-6">
-            <h3 className="text-xl font-semibold mb-4">Đặt lịch tiêm chủng</h3>
+            <h3 className="text-xl font-semibold mb-4 text-white">Đặt lịch tiêm chủng</h3>
             {msg && <div className="text-green-600 mb-3">{msg}</div>}
             <div className="grid sm:grid-cols-2 gap-4">
                 {vacs.map(v => (
                     <div key={v.id} className="card flex flex-col">
-                        <div className="font-semibold">{v.name}</div>
-                        <div className="text-sm text-gray-500">Số mũi: {v.doses_required} • Khoảng cách: {v.interval_days} ngày</div>
+                        <div className="font-semibold text-white">{v.name}</div>
+                        <div className="text-sm text-white">Số mũi: {v.doses_required} • Khoảng cách: {v.interval_days} ngày</div>
                         <div className="mt-4">
                             <button onClick={() => book(v.id)} className="px-3 py-2 bg-primary text-white rounded">Đặt lịch</button>
                         </div>
