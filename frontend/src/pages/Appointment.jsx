@@ -155,19 +155,3 @@ export default function Appointment() {
         </div>
     );
 }
-                        {doctors.length > 0
-                            ? doctors
-                                .filter(doc => !form.departmentId || String(doc.department_id) === String(form.departmentId))
-                                .map(d => <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>)
-                            : <option disabled>Không có bác sĩ</option>}
-                    </select>
-
-                    <input type="date" className="w-full p-3 border rounded" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />
-                    <input type="time" className="w-full p-3 border rounded" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} required />
-                    <textarea className="w-full p-3 border rounded" placeholder="Triệu chứng (nếu có)" value={form.symptoms} onChange={(e) => setForm({ ...form, symptoms: e.target.value })} />
-                    <button className="w-full py-3 bg-primary text-white rounded">Xác nhận đặt lịch</button>
-                </form>
-            </div>
-        </div>
-    );
-}

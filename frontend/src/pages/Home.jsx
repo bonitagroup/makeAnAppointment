@@ -18,7 +18,6 @@ export default function Home() {
                         <li>✅ Đặt lịch khám</li>
                         <li>✅ Đặt lịch tiêm chủng & sổ tiêm</li>
                         <li>✅ Nhắc lịch & quản lý người thân</li>
-                        <li>✅ Đăng nhập bằng email / Zalo (sắp mở rộng)</li>
                     </ul>
                 </div>
             </div>
