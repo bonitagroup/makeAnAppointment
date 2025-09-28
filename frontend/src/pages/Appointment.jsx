@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useLocation } from "react-router-dom";
 import Loading from "../components/Loading";
+import { toast } from "react-toastify";
 
 export default function Appointment() {
     const [deps, setDeps] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [form, setForm] = useState({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
-    const [msg, setMsg] = useState("");
-    const [msgType, setMsgType] = useState("");
     const [loading, setLoading] = useState(true);
     const [patientId, setPatientId] = useState(null);
     const [phone, setPhone] = useState("");
@@ -64,37 +63,29 @@ export default function Appointment() {
 
     const submit = async (e) => {
         e.preventDefault();
-        setMsg("");
-        setMsgType("");
 
         if (!patientId) {
-            setMsg("Vui lòng đăng nhập lại hoặc kiểm tra tài khoản.");
-            setMsgType("error");
+            toast.error("Vui lòng đăng nhập lại hoặc kiểm tra tài khoản.");
             return;
         }
         if (!phone) {
-            setMsg("Vui lòng nhập số điện thoại.");
-            setMsgType("error");
+            toast.error("Vui lòng nhập số điện thoại.");
             return;
         }
         if (!form.departmentId) {
-            setMsg("Vui lòng chọn khoa.");
-            setMsgType("error");
+            toast.error("Vui lòng chọn khoa.");
             return;
         }
         if (!form.doctorId) {
-            setMsg("Vui lòng chọn bác sĩ.");
-            setMsgType("error");
+            toast.error("Vui lòng chọn bác sĩ.");
             return;
         }
         if (!form.date) {
-            setMsg("Vui lòng chọn ngày khám.");
-            setMsgType("error");
+            toast.error("Vui lòng chọn ngày khám.");
             return;
         }
         if (!form.time) {
-            setMsg("Vui lòng chọn giờ khám.");
-            setMsgType("error");
+            toast.error("Vui lòng chọn giờ khám.");
             return;
         }
 
@@ -108,13 +99,11 @@ export default function Appointment() {
                 department_id: form.departmentId,
                 phone
             });
-            setMsg("Đặt lịch thành công");
-            setMsgType("success");
+            toast.success("Đặt lịch thành công");
             setForm({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
             setPhone("");
         } catch (err) {
-            setMsg(err.response?.data?.message || "Lỗi đặt lịch");
-            setMsgType("error");
+            toast.error(err.response?.data?.message || "Lỗi đặt lịch");
         }
     };
 
@@ -124,11 +113,6 @@ export default function Appointment() {
         <div className="container py-6 max-w-2xl">
             <div className="card">
                 <h3 className="font-semibold mb-3 text-white">Đặt lịch khám</h3>
-                {msg && (
-                    <div className={`text-sm mb-3 ${msgType === "success" ? "text-green-600" : "text-red-600"}`}>
-                        {msg}
-                    </div>
-                )}
                 <form onSubmit={submit} className="space-y-3">
                     <input
                         type="text"
@@ -155,6 +139,22 @@ export default function Appointment() {
                         onChange={(e) => setForm({ ...form, doctorId: e.target.value })}
                     >
                         <option value="">Chọn bác sĩ</option>
+                        {doctors.length > 0
+                            ? doctors
+                                .filter(doc => !form.departmentId || String(doc.department_id) === String(form.departmentId))
+                                .map(d => <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>)
+                            : <option disabled>Không có bác sĩ</option>}
+                    </select>
+
+                    <input type="date" className="w-full p-3 border rounded" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />
+                    <input type="time" className="w-full p-3 border rounded" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} required />
+                    <textarea className="w-full p-3 border rounded" placeholder="Triệu chứng (nếu có)" value={form.symptoms} onChange={(e) => setForm({ ...form, symptoms: e.target.value })} />
+                    <button className="w-full py-3 bg-primary text-white rounded">Xác nhận đặt lịch</button>
+                </form>
+            </div>
+        </div>
+    );
+}
                         {doctors.length > 0
                             ? doctors
                                 .filter(doc => !form.departmentId || String(doc.department_id) === String(form.departmentId))

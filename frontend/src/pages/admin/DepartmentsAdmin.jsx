@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "@/api/axios";
+import { toast } from "react-toastify";
 
 export default function DepartmentsAdmin() {
     const [list, setList] = useState([]);
@@ -28,7 +29,12 @@ export default function DepartmentsAdmin() {
 
     const edit = (d) => { setEditing(d); setName(d.name); setDesc(d.description || ""); };
 
-    const remove = async (id) => { if (!confirm("Xóa khoa?")) return; await api.delete(`/departments/${id}`); load(); };
+    const remove = async (id) => {
+        if (!confirm("Xóa khoa?")) return;
+        await api.delete(`/departments/${id}`);
+        toast.success("Đã xóa khoa thành công!");
+        load();
+    };
 
     return (
         <div className="p-4 max-w-3xl">

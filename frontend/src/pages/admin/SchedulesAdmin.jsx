@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 export default function SchedulesAdmin() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [msg, setMsg] = useState("");
 
     const loadAppointments = async () => {
         setLoading(true);
@@ -23,31 +23,28 @@ export default function SchedulesAdmin() {
     }, []);
 
     const approve = async (id) => {
-        setMsg("");
         try {
             await api.put(`/appointments/${id}/approve`);
-            setMsg("Duyệt thành công, đã gửi thông báo cho bệnh nhân. Bệnh nhân cần đến đúng giờ.");
+            toast.success("Duyệt thành công, đã gửi thông báo cho bệnh nhân. Bệnh nhân cần đến đúng giờ.");
             loadAppointments();
         } catch (err) {
-            setMsg(err.response?.data?.message || "Lỗi duyệt lịch.");
+            toast.error(err.response?.data?.message || "Lỗi duyệt lịch.");
         }
     };
 
     const reject = async (id) => {
-        setMsg("");
         try {
             await api.put(`/appointments/${id}/reject`);
-            setMsg("Lịch đã bị từ chối.");
+            toast.success("Lịch đã bị từ chối.");
             loadAppointments();
         } catch (err) {
-            setMsg(err.response?.data?.message || "Lỗi từ chối lịch.");
+            toast.error(err.response?.data?.message || "Lỗi từ chối lịch.");
         }
     };
 
     return (
         <div className="p-4 max-w-4xl">
             <h2 className="text-xl font-bold mb-4">Quản lý Lịch hẹn bệnh nhân</h2>
-            {msg && <div className={`mb-3 ${msg.includes("thành công") ? "text-green-600" : "text-red-600"}`}>{msg}</div>}
             {loading ? (
                 <div>Đang tải...</div>
             ) : (

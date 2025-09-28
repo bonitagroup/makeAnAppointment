@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import Loading from "../components/Loading";
+import { toast } from "react-toastify";
 
 export default function Vaccination() {
     const [vacs, setVacs] = useState([]);
@@ -15,9 +16,9 @@ export default function Vaccination() {
         setMsg("");
         try {
             await api.post("/injections", { patient_id: 1, vaccine_id: vaccineId, date: new Date().toISOString().slice(0, 10), time: "09:00", dose_number: 1 });
-            setMsg("Đặt lịch tiêm thành công");
+            toast.success("Đặt lịch tiêm thành công");
         } catch (err) {
-            setMsg(err.response?.data?.message || "Lỗi");
+            toast.error(err.response?.data?.message || "Lỗi");
         }
     };
 
@@ -26,7 +27,6 @@ export default function Vaccination() {
     return (
         <div className="container py-6">
             <h3 className="text-xl font-semibold mb-4 text-white">Đặt lịch tiêm chủng</h3>
-            {msg && <div className="text-green-600 mb-3">{msg}</div>}
             <div className="grid sm:grid-cols-2 gap-4">
                 {vacs.map(v => (
                     <div key={v.id} className="card flex flex-col">

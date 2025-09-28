@@ -1,25 +1,25 @@
 import { useRecoilValue } from "recoil";
 import { authAtom } from "@/atoms/authAtom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Profile() {
     const auth = useRecoilValue(authAtom);
     const user = auth.user;
     const [avatar, setAvatar] = useState(user?.avatar || "");
     const [phone, setPhone] = useState(user?.phone || "");
-    const [msg, setMsg] = useState("");
 
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const url = URL.createObjectURL(file);
             setAvatar(url);
-            setMsg("Ảnh đại diện đã được cập nhật (chỉ hiển thị demo, chưa lưu lên server)");
+            toast.info("Ảnh đại diện đã được cập nhật (chỉ hiển thị demo, chưa lưu lên server)");
         }
     };
 
     const handlePhoneUpdate = () => {
-        setMsg("Số điện thoại đã được cập nhật (chỉ hiển thị demo, chưa lưu lên server)");
+        toast.success("Số điện thoại đã được cập nhật (chỉ hiển thị demo, chưa lưu lên server)");
     };
 
     return (
@@ -50,7 +50,6 @@ export default function Profile() {
                             />
                             <button className="ml-2 px-3 py-1 bg-primary text-white rounded" onClick={handlePhoneUpdate}>Cập nhật</button>
                         </div>
-                        {msg && <div className="text-green-600 text-sm mt-2">{msg}</div>}
                     </div>
                 ) : (
                     <div>Không có dữ liệu</div>
@@ -58,4 +57,5 @@ export default function Profile() {
             </div>
         </div>
     );
+}
 }
