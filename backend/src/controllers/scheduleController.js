@@ -22,7 +22,6 @@ exports.create = async (req, res) => {
     try {
         const { doctorId, date, timeSlot } = req.body;
         if (!doctorId || !date || !timeSlot) return res.status(400).json({ message: "Missing fields" });
-        // Optional: prevent duplicate time slot
         const exists = await Schedule.findOne({ where: { doctorId, date, timeSlot } });
         if (exists) return res.status(400).json({ message: "Time slot already exists" });
         const s = await Schedule.create({ doctorId, date, timeSlot });
@@ -50,10 +49,8 @@ exports.remove = async (req, res) => {
 
 exports.getSlots = async (req, res) => {
     const { doctorId, date } = req.query;
-    // Lấy lịch làm việc của bác sĩ
     const schedule = await DoctorSchedule.findOne({ where: { doctor_id: doctorId, date } });
     if (!schedule) return res.json({ slots: [] });
-    // Tạo danh sách slot theo slot_duration và time_from/time_to
     const slots = [];
     let start = schedule.time_from;
     let end = schedule.time_to;
@@ -74,6 +71,5 @@ exports.approve = async (req, res) => {
     if (!sch) return res.status(404).json({ message: "Not found" });
     sch.status = "approved";
     await sch.save();
-    // TODO: gửi thông báo cho bệnh nhân
     res.json(sch);
 };

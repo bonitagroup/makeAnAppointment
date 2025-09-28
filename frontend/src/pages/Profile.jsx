@@ -9,7 +9,6 @@ export default function Profile() {
     const [phone, setPhone] = useState(user?.phone || "");
     const [msg, setMsg] = useState("");
 
-    // Dummy avatar upload handler (replace with real API if needed)
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -19,7 +18,6 @@ export default function Profile() {
         }
     };
 
-    // Dummy phone update handler (replace with real API if needed)
     const handlePhoneUpdate = () => {
         setMsg("Số điện thoại đã được cập nhật (chỉ hiển thị demo, chưa lưu lên server)");
     };

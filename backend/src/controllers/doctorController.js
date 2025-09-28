@@ -29,7 +29,6 @@ exports.update = async (req, res) => {
     try {
         const doc = await Doctor.findByPk(req.params.id);
         if (!doc) return res.status(404).json({ message: "Not found" });
-        // Đảm bảo cập nhật đúng trường department_id
         const updateData = { ...req.body };
         if (updateData.departmentId) {
             updateData.department_id = updateData.departmentId;

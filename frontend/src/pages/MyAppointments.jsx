@@ -8,7 +8,6 @@ export default function MyAppointments() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Lấy lịch đã đăng ký của user (demo: patient_id=1)
         api.get("/appointments/patient/1").then(r => setList(r.data || [])).catch(() => setList([])).finally(() => setLoading(false));
     }, []);
 

@@ -16,13 +16,11 @@ export default function Navbar() {
         navigate("/login");
     };
 
-    // Ẩn Navbar khi đang ở trang admin
     if (location.pathname.startsWith("/admin")) return null;
 
     return (
         <header className="bg-white shadow-sm">
             <div className="container flex items-center justify-between py-2 px-3">
-                {/* Logo */}
                 <Link to="/" className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-sm">
                         Z
@@ -35,7 +33,6 @@ export default function Navbar() {
                     </div>
                 </Link>
 
-                {/* Desktop menu */}
                 <nav className="hidden md:flex items-center gap-4">
                     <Link to="/departments" className="text-sm text-gray-700 hover:text-primary">Khoa</Link>
                     <Link to="/appointment" className="text-sm text-gray-700 hover:text-primary">Đặt lịch</Link>
@@ -62,7 +59,6 @@ export default function Navbar() {
                     )}
                 </nav>
 
-                {/* Mobile hamburger */}
                 <button
                     className="md:hidden text-gray-700"
                     onClick={() => setOpen(!open)}
@@ -71,7 +67,6 @@ export default function Navbar() {
                 </button>
             </div>
 
-            {/* Mobile menu dropdown */}
             {open && (
                 <div className="md:hidden bg-white border-t shadow-sm flex flex-col gap-2 p-3">
                     <Link to="/departments" className="text-sm text-gray-700 hover:text-primary">Khoa</Link>

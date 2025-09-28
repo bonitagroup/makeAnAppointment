@@ -12,7 +12,6 @@ body { @apply bg-gray-50 text-gray-800 antialiased; }
   @apply max-w-5xl mx-auto px-4;
 }
 
-/* small card style */
 .card {
   @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm;
 }

@@ -8,7 +8,7 @@ export default function Appointment() {
     const [doctors, setDoctors] = useState([]);
     const [form, setForm] = useState({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
     const [msg, setMsg] = useState("");
-    const [msgType, setMsgType] = useState(""); // "success" | "error"
+    const [msgType, setMsgType] = useState("");
     const [loading, setLoading] = useState(true);
     const [patientId, setPatientId] = useState(null);
     const [phone, setPhone] = useState("");
@@ -16,7 +16,6 @@ export default function Appointment() {
     const loc = useLocation();
 
     useEffect(() => {
-        // fetch deps & doctors
         Promise.all([api.get("/departments"), api.get("/doctors")])
             .then(([a, b]) => {
                 setDeps(Array.isArray(a.data) ? a.data : []);
@@ -25,14 +24,12 @@ export default function Appointment() {
             .catch(() => { })
             .finally(() => setLoading(false));
 
-        // lấy user từ localStorage
         const user = JSON.parse(localStorage.getItem("user") || "null");
         if (!user || !user.id) {
             setPatientId(null);
             return;
         }
 
-        // tìm patient theo user_id
         api.get(`/patients?user_id=${user.id}`)
             .then(res => {
                 if (Array.isArray(res.data) && res.data.length > 0) {
@@ -40,7 +37,6 @@ export default function Appointment() {
                 } else if (res.data && typeof res.data === "object" && res.data.id) {
                     setPatientId(res.data.id);
                 } else {
-                    // nếu chưa có patient thì tạo mới
                     api.post("/patients", {
                         user_id: user.id,
                         name: user.name,
@@ -56,7 +52,6 @@ export default function Appointment() {
             })
             .catch(() => setPatientId(null));
 
-        // prefilling if query params
         const qp = new URLSearchParams(loc.search);
         const doctor = qp.get("doctor");
         const dept = qp.get("dept");

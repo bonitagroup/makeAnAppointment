@@ -12,7 +12,6 @@ import Profile from "./pages/Profile";
 import Vaccination from "./pages/Vaccination";
 import RequireAuth from "./components/RequireAuth";
 
-// Admin imports
 import RequireAdmin from "./components/RequireAdmin";
 import DepartmentsAdmin from "./pages/admin/DepartmentsAdmin";
 import DoctorsAdmin from "./pages/admin/DoctorsAdmin";
@@ -23,11 +22,9 @@ import AdminNavbar from "./components/AdminNavbar";
 export default function App() {
     return (
         <div className="min-h-screen flex flex-col">
-            {/* Navbar chỉ hiện cho client, admin có navbar riêng */}
             <Navbar />
             <main className="flex-grow">
                 <Routes>
-                    {/* Client routes */}
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
@@ -66,7 +63,6 @@ export default function App() {
                         }
                     />
 
-                    {/* Admin routes */}
                     <Route
                         path="/admin"
                         element={

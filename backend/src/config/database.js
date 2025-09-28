@@ -1,4 +1,3 @@
-// src/config/database.js
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
@@ -19,16 +18,15 @@ const sequelize = new Sequelize(
     }
 );
 
-// Kết nối DB + đồng bộ models (tạo bảng nếu chưa có)
 sequelize
     .authenticate()
     .then(() => {
-        console.log("✅ Sequelize: DB connection OK");
-        return sequelize.sync(); // 🔥 Tự động tạo bảng nếu chưa tồn tại
+        console.log("Sequelize: DB connection OK");
+        return sequelize.sync();
     })
     .then(() => {
-        console.log("✅ Sequelize: Models synchronized");
+        console.log("Sequelize: Models synchronized");
     })
-    .catch((err) => console.error("❌ Sequelize: DB connection ERROR", err));
+    .catch((err) => console.error("Sequelize: DB connection ERROR", err));
 
 module.exports = sequelize;

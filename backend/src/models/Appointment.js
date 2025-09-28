@@ -9,7 +9,7 @@ const Appointment = sequelize.define("appointment", {
     time: { type: DataTypes.TIME, allowNull: false },
     symptoms: { type: DataTypes.STRING },
     department_id: { type: DataTypes.INTEGER },
-    phone: { type: DataTypes.STRING, allowNull: false }, // Thêm trường phone
+    phone: { type: DataTypes.STRING, allowNull: false },
     status: { type: DataTypes.ENUM("pending", "approved", "rejected", "cancelled"), defaultValue: "pending" }
 }, {
     tableName: "appointments",

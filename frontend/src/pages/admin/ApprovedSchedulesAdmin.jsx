@@ -21,7 +21,6 @@ export default function ApprovedSchedulesAdmin() {
         load();
     }, []);
 
-    // Nhóm lịch theo khoa
     const grouped = {};
     appointments.forEach(a => {
         const depId = a.department_id || a.doctor?.department_id;

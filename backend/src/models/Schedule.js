@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         doctorId: { type: DataTypes.INTEGER, allowNull: false },
         date: { type: DataTypes.DATEONLY, allowNull: false },
-        timeSlot: { type: DataTypes.STRING(64), allowNull: false }, // ví dụ "09:00-09:30"
+        timeSlot: { type: DataTypes.STRING(64), allowNull: false },
         isBooked: { type: DataTypes.BOOLEAN, defaultValue: false },
     }, {
         tableName: "schedules",

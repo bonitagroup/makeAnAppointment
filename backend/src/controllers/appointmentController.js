@@ -1,28 +1,23 @@
 const { Appointment, Doctor, Patient, DoctorSchedule } = require("../models/index");
 const { Op } = require("sequelize");
 
-// Create appointment with basic slot check (count existing appointments same doctor/date/time)
 exports.create = async (req, res) => {
     try {
         const { patient_id, doctor_id, date, time, symptoms, department_id, phone } = req.body;
         if (!patient_id || !doctor_id || !date || !time || !phone) return res.status(400).json({ message: "Missing fields" });
 
-        // Kiểm tra patient tồn tại
         const patient = await Patient.findByPk(patient_id);
         if (!patient) return res.status(400).json({ message: "Patient not found" });
 
-        // Simple check: count appointments for same doctor/date/time
         const existing = await Appointment.count({
             where: { doctor_id, date, time, status: { [Op.ne]: "cancelled" } }
         });
 
-        // Check doctor schedule max_slots for that date
         const schedule = await DoctorSchedule.findOne({ where: { doctor_id, date } });
         if (schedule && existing >= schedule.max_slots) {
             return res.status(400).json({ message: "No available slot" });
         }
 
-        // Trạng thái mặc định là pending
         const appointment = await Appointment.create({ patient_id, doctor_id, date, time, symptoms, department_id, phone, status: "pending" });
         res.status(201).json(appointment);
     } catch (err) {
@@ -54,7 +49,6 @@ exports.cancel = async (req, res) => {
 
 exports.list = async (req, res) => {
     try {
-        // Trả về tất cả lịch hẹn, kèm thông tin bác sĩ và bệnh nhân
         const where = {};
         if (req.query.status) where.status = req.query.status;
         if (req.query.department_id) where.department_id = req.query.department_id;

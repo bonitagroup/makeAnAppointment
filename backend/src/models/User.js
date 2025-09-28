@@ -1,4 +1,3 @@
-// src/models/User.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
@@ -32,7 +31,7 @@ const User = sequelize.define(
         },
     },
     {
-        tableName: "users", // Đảm bảo đúng tên bảng
+        tableName: "users",
         timestamps: true,
     }
 );
