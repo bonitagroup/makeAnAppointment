@@ -3,9 +3,11 @@ import api from "../api/axios";
 import { useLocation } from "react-router-dom";
 import Loading from "../components/Loading";
 import { toast } from "react-toastify";
+import { useRecoilState } from "recoil";
+import { departmentListAtom } from "@/atoms/departmentAtom";
 
 export default function Appointment() {
-    const [deps, setDeps] = useState([]);
+    const [deps, setDeps] = useRecoilState(departmentListAtom);
     const [doctors, setDoctors] = useState([]);
     const [form, setForm] = useState({ departmentId: "", doctorId: "", date: "", time: "", symptoms: "" });
     const [loading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export default function Appointment() {
     useEffect(() => {
         Promise.all([api.get("/departments"), api.get("/doctors")])
             .then(([a, b]) => {
-                setDeps(Array.isArray(a.data) ? a.data : []);
+                if (Array.isArray(a.data)) setDeps(a.data);
                 setDoctors(Array.isArray(b.data) ? b.data : []);
             })
             .catch(() => { })
@@ -60,7 +62,6 @@ export default function Appointment() {
             departmentId: dept || prev.departmentId
         }));
     }, [loc.search]);
-
     const submit = async (e) => {
         e.preventDefault();
 

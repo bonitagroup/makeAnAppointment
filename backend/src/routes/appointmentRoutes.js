@@ -6,8 +6,8 @@ const auth = require("../middlewares/authMiddleware");
 router.post("/", auth, appointmentCtrl.create);
 router.get("/patient/:patientId", appointmentCtrl.getByPatient);
 router.put("/:id/cancel", auth, appointmentCtrl.cancel);
-router.get("/", appointmentCtrl.list); // Trả về tất cả lịch hẹn cho admin
-router.put("/:id/approve", auth, appointmentCtrl.approve); // Duyệt lịch hẹn
-router.put("/:id/reject", auth, appointmentCtrl.reject); // Không duyệt lịch hẹn
+router.get("/", appointmentCtrl.list);
+router.put("/:id/approve", auth, appointmentCtrl.approve);
+router.put("/:id/reject", auth, appointmentCtrl.reject);
 
 module.exports = router;

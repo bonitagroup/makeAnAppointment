@@ -12,7 +12,6 @@ const InjectionAppointment = require("./InjectionAppointment");
 const VaccineRecord = require("./VaccineRecord");
 const Payment = require("./Payment");
 
-// Associations
 User.hasMany(Patient, { foreignKey: "user_id", as: "patients" });
 Patient.belongsTo(User, { foreignKey: "user_id", as: "user" });
 

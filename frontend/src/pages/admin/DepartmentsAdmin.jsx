@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import { toast } from "react-toastify";
+import { useRecoilState } from "recoil";
+import { departmentListAtom } from "@/atoms/departmentAtom";
 
 export default function DepartmentsAdmin() {
-    const [list, setList] = useState([]);
+    const [list, setList] = useRecoilState(departmentListAtom);
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
     const [editing, setEditing] = useState(null);

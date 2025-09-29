@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import dayjs from "dayjs";
+import { useRecoilState } from "recoil";
+import { departmentListAtom } from "@/atoms/departmentAtom";
 
 export default function ApprovedSchedulesAdmin() {
     const [appointments, setAppointments] = useState([]);
-    const [departments, setDepartments] = useState([]);
+    const [departments, setDepartments] = useRecoilState(departmentListAtom);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

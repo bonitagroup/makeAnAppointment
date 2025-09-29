@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import Loading from "../components/Loading";
+import { useRecoilState } from "recoil";
+import { departmentListAtom } from "@/atoms/departmentAtom";
 
 export default function Departments() {
-    const [deps, setDeps] = useState([]);
+    const [deps, setDeps] = useRecoilState(departmentListAtom);
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
     const [doctors, setDoctors] = useState([]);
 
     useEffect(() => {
-        api.get("/departments").then(r => {
-            setDeps(r.data);
-        }).catch(() => { }).finally(() => setLoading(false));
+        if (deps.length === 0) {
+            api.get("/departments").then(r => {
+                setDeps(r.data);
+            }).catch(() => { }).finally(() => setLoading(false));
+        } else {
+            setLoading(false);
+        }
     }, []);
 
     const showDoctors = async (dep) => {
