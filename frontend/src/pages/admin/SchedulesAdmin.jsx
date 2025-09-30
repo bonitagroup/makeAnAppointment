@@ -27,7 +27,7 @@ export default function SchedulesAdmin() {
     const approve = async (id) => {
         try {
             await api.put(`/appointments/${id}/approve`);
-            toast.success("Duyệt thành công, đã gửi thông báo cho bệnh nhân. Bệnh nhân cần đến đúng giờ.");
+            toast.success("Duyệt thành công, đã gửi thông báo cho bệnh nhân.");
             loadAppointments();
         } catch (err) {
             toast.error(err.response?.data?.message || "Lỗi duyệt lịch.");
@@ -79,7 +79,7 @@ export default function SchedulesAdmin() {
                                 </div>
                                 <div className="text-xs text-black">Triệu chứng: {a.symptoms || "-"}</div>
                                 <div className="text-xs text-black">
-                                    Trạng thái: {a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : a.status}
+                                    Trạng thái: {a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : a.status === "not_approved" ? "Không được duyệt" : a.status}
                                     {a.status === "approved" && <span className="ml-2 text-green-600 font-semibold">✔ Đã duyệt!</span>}
                                 </div>
                             </div>
@@ -121,7 +121,7 @@ export default function SchedulesAdmin() {
                         <div className="mb-2"><b>Ngày khám:</b> {dayjs(selected.date).format("DD/MM/YYYY")}</div>
                         <div className="mb-2"><b>Giờ khám:</b> {selected.time}</div>
                         <div className="mb-2"><b>Triệu chứng:</b> {selected.symptoms || "-"}</div>
-                        <div className="mb-2"><b>Trạng thái:</b> {selected.status === "pending" ? "Chờ duyệt" : selected.status === "approved" ? "Đã duyệt" : selected.status}</div>
+                        <div className="mb-2"><b>Trạng thái:</b> {selected.status === "pending" ? "Chờ duyệt" : selected.status === "approved" ? "Đã duyệt" : selected.status === "not_approved" ? "Không được duyệt" : selected.status}</div>
                     </div>
                 </div>
             )}

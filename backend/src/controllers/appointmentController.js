@@ -90,7 +90,7 @@ exports.approve = async (req, res) => {
         const appt = await Appointment.findByPk(id);
         if (!appt) return res.status(404).json({ message: "Không tìm thấy lịch hẹn" });
         if (appt.status === "approved") return res.json({ message: "Lịch đã được duyệt trước đó", appointment: appt });
-        if (appt.status === "rejected") return res.json({ message: "Lịch đã bị từ chối trước đó", appointment: appt });
+        if (appt.status === "not_approved") return res.json({ message: "Lịch đã bị không được duyệt trước đó", appointment: appt });
         if (appt.status === "cancelled") return res.json({ message: "Lịch đã bị hủy", appointment: appt });
         appt.status = "approved";
         await appt.save();
@@ -105,12 +105,12 @@ exports.reject = async (req, res) => {
         const { id } = req.params;
         const appt = await Appointment.findByPk(id);
         if (!appt) return res.status(404).json({ message: "Không tìm thấy lịch hẹn" });
-        if (appt.status === "rejected") return res.json({ message: "Lịch đã bị từ chối trước đó", appointment: appt });
+        if (appt.status === "not_approved") return res.json({ message: "Lịch đã bị không được duyệt trước đó", appointment: appt });
         if (appt.status === "approved") return res.json({ message: "Lịch đã được duyệt trước đó", appointment: appt });
         if (appt.status === "cancelled") return res.json({ message: "Lịch đã bị hủy", appointment: appt });
-        appt.status = "rejected";
+        appt.status = "not_approved";
         await appt.save();
-        res.json({ message: "Lịch đã bị từ chối", appointment: appt });
+        res.json({ message: "Lịch đã bị không được duyệt", appointment: appt });
     } catch (err) {
         res.status(500).json({ message: "Lỗi từ chối lịch: " + err.message });
     }

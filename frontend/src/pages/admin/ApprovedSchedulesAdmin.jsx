@@ -68,7 +68,7 @@ export default function ApprovedSchedulesAdmin() {
                                             <span className="font-medium">Triệu chứng:</span> {a.symptoms || "-"}
                                         </div>
                                         <div className="text-xs text-green-600 font-semibold flex items-center gap-1 mt-1">
-                                            <span>✔</span> Đã duyệt
+                                            <span>✔</span> {a.status === "approved" ? "Đã duyệt" : a.status === "not_approved" ? "Không được duyệt" : ""}
                                         </div>
                                     </div>
                                 ))}
