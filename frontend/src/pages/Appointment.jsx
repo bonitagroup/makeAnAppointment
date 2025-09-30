@@ -42,8 +42,7 @@ export default function Appointment() {
                         user_id: user.id,
                         name: user.name,
                         phone: user.phone || "",
-                        dob: "2000-01-01",
-                        gender: "O",
+                        gender: user.gender || "O",
                         relation: "self"
                     }).then(r => {
                         if (r.data && r.data.id) setPatientId(r.data.id);

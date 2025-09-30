@@ -29,6 +29,14 @@ const User = sequelize.define(
             type: DataTypes.ENUM("patient", "doctor", "admin"),
             defaultValue: "patient",
         },
+        gender: {
+            type: DataTypes.ENUM("M", "F", "O"),
+            defaultValue: "O",
+        },
+        avatar: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
     },
     {
         tableName: "users",

@@ -48,6 +48,19 @@ export default function ApprovedSchedulesAdmin() {
                                             <span className="font-medium">Bác sĩ:</span> {a.doctor?.name || `#${a.doctor_id}`}
                                         </div>
                                         <div className="text-sm text-white">
+                                            <span className="font-medium">Khoa:</span> {a.doctor?.department?.name || a.department?.name || a.department_name || "-"}
+                                        </div>
+                                        <div className="text-sm text-white">
+                                            <span className="font-medium">Giới tính:</span> {
+                                                a.patient?.gender === "M" ? "Nam" :
+                                                    a.patient?.gender === "F" ? "Nữ" :
+                                                        a.patient?.gender === "O" ? "Khác" : "-"
+                                            }
+                                        </div>
+                                        <div className="text-sm text-white">
+                                            <span className="font-medium">Email:</span> {a.patient?.email || a.patient?.user?.email || "-"}
+                                        </div>
+                                        <div className="text-sm text-white">
                                             <span className="font-medium">Ngày:</span> {dayjs(a.date).format("DD/MM/YYYY")}
                                             <span className="ml-2 font-medium">Giờ:</span> {a.time}
                                         </div>

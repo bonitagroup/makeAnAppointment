@@ -16,7 +16,7 @@ User.hasMany(Patient, { foreignKey: "user_id", as: "patients" });
 Patient.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 Department.hasMany(Doctor, { foreignKey: "department_id", as: "doctors" });
-Doctor.belongsTo(Department, { foreignKey: "department_id", as: "department" });
+Doctor.belongsTo(Department, { foreignKey: "department_id" });
 
 Doctor.hasMany(DoctorSchedule, { foreignKey: "doctor_id", as: "schedules" });
 DoctorSchedule.belongsTo(Doctor, { foreignKey: "doctor_id", as: "doctor" });

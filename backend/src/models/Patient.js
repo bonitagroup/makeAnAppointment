@@ -14,4 +14,8 @@ const Patient = sequelize.define("patient", {
     timestamps: true
 });
 
+Patient.associate = (models) => {
+    Patient.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
+};
+
 module.exports = Patient;

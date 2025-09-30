@@ -71,7 +71,19 @@ exports.updateMe = async (req, res) => {
     try {
         const user = await User.findByPk(req.user.id);
         if (!user) return res.status(404).json({ message: "Not found" });
-        await user.update(req.body);
+        const updateData = {};
+        if (req.body.phone !== undefined) updateData.phone = req.body.phone;
+        if (req.body.gender !== undefined) updateData.gender = req.body.gender;
+        await user.update(updateData);
+
+        if (req.body.gender !== undefined) {
+            const { Patient } = require("../models");
+            await Patient.update(
+                { gender: req.body.gender },
+                { where: { user_id: req.user.id, relation: "self" } }
+            );
+        }
+
         res.json({ message: "Cập nhật thành công", user });
     } catch (err) {
         res.status(500).json({ message: err.message });

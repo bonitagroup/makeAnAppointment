@@ -1,4 +1,4 @@
-const { Appointment, Doctor, Patient, DoctorSchedule } = require("../models/index");
+const { Appointment, Doctor, Patient, DoctorSchedule, User, Department } = require("../models/index");
 const { Op } = require("sequelize");
 
 exports.create = async (req, res) => {
@@ -31,7 +31,13 @@ exports.getByPatient = async (req, res) => {
     const appts = await Appointment.findAll({
         where: { patient_id: patientId },
         include: [
-            { model: Doctor, as: "doctor" }
+            {
+                model: Doctor,
+                as: "doctor",
+                include: [
+                    { model: Department, as: "department" }
+                ]
+            }
         ],
         order: [["date", "DESC"], ["time", "ASC"]]
     });
@@ -55,8 +61,20 @@ exports.list = async (req, res) => {
         const appts = await Appointment.findAll({
             where,
             include: [
-                { model: Doctor, as: "doctor" },
-                { model: Patient, as: "patient" }
+                {
+                    model: Doctor,
+                    as: "doctor",
+                    include: [
+                        { model: Department, as: "department" }
+                    ]
+                },
+                {
+                    model: Patient,
+                    as: "patient",
+                    include: [
+                        { association: "user" }
+                    ]
+                }
             ],
             order: [["date", "DESC"], ["time", "ASC"]]
         });
@@ -78,7 +96,7 @@ exports.approve = async (req, res) => {
         await appt.save();
         res.json({ message: "Lịch đã được duyệt, vui lòng đến đúng giờ", appointment: appt });
     } catch (err) {
-        res.json({ message: "Lỗi duyệt lịch: " + err.message });
+        res.status(500).json({ message: "Lỗi duyệt lịch: " + err.message });
     }
 };
 
@@ -94,6 +112,6 @@ exports.reject = async (req, res) => {
         await appt.save();
         res.json({ message: "Lịch đã bị từ chối", appointment: appt });
     } catch (err) {
-        res.json({ message: "Lỗi từ chối lịch: " + err.message });
+        res.status(500).json({ message: "Lỗi từ chối lịch: " + err.message });
     }
 };

@@ -6,15 +6,16 @@ import { toast } from "react-toastify";
 export default function SchedulesAdmin() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selected, setSelected] = useState(null); // appointment được chọn để xem chi tiết
+    const [selected, setSelected] = useState(null);
 
     const loadAppointments = async () => {
         setLoading(true);
         try {
             const res = await api.get("/appointments");
             setAppointments(res.data);
-        } catch {
+        } catch (err) {
             setAppointments([]);
+            console.error("Lỗi tải lịch hẹn:", err);
         }
         setLoading(false);
     };
@@ -60,11 +61,21 @@ export default function SchedulesAdmin() {
                             <div>
                                 <div className="font-semibold text-black">{a.patient?.name || `Bệnh nhân #${a.patient_id}`}</div>
                                 <div className="text-sm text-black">
-                                    Bác sĩ: {a.doctor?.name || `#${a.doctor_id}`} • Ngày: {dayjs(a.date).format("DD/MM/YYYY")} • Giờ: {a.time}
+                                    Bác sĩ: {a.doctor?.name || `#${a.doctor_id}`} • Khoa: {a.doctor?.department?.name || a.department?.name || a.department_name || "-"} • Ngày: {dayjs(a.date).format("DD/MM/YYYY")} • Giờ: {a.time}
                                 </div>
                                 <div className="text-xs text-black">SĐT: {a.phone || a.patient?.phone || "-"}</div>
                                 <div className="text-xs text-black">
-                                    Giới tính: {a.patient?.gender === "M" ? "Nam" : a.patient?.gender === "F" ? "Nữ" : "Khác"}
+                                    Giới tính: {
+                                        a.patient?.gender === "M" ? "Nam" :
+                                            a.patient?.gender === "F" ? "Nữ" :
+                                                a.patient?.gender === "O" ? "Khác" :
+                                                    a.patient?.user?.gender === "M" ? "Nam" :
+                                                        a.patient?.user?.gender === "F" ? "Nữ" :
+                                                            a.patient?.user?.gender === "O" ? "Khác" : "-"
+                                    }
+                                </div>
+                                <div className="text-xs text-black">
+                                    Email: {a.patient?.email || a.patient?.user?.email || "-"}
                                 </div>
                                 <div className="text-xs text-black">Triệu chứng: {a.symptoms || "-"}</div>
                                 <div className="text-xs text-black">
@@ -85,7 +96,6 @@ export default function SchedulesAdmin() {
                 </div>
             )}
 
-            {/* Modal xem chi tiết bệnh nhân và lịch hẹn */}
             {selected && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full relative">
@@ -95,12 +105,19 @@ export default function SchedulesAdmin() {
                         >×</button>
                         <h3 className="text-lg font-bold mb-3">Chi tiết lịch hẹn</h3>
                         <div className="mb-2"><b>Bệnh nhân:</b> {selected.patient?.name || `Bệnh nhân #${selected.patient_id}`}</div>
-                        <div className="mb-2"><b>Giới tính:</b> {selected.patient?.gender === "M" ? "Nam" : selected.patient?.gender === "F" ? "Nữ" : "Khác"}</div>
+                        <div className="mb-2">
+                            <b>Giới tính:</b> {
+                                selected.patient?.gender === "M" ? "Nam" :
+                                    selected.patient?.gender === "F" ? "Nữ" :
+                                        selected.patient?.gender === "O" ? "Khác" : "-"
+                            }
+                        </div>
                         <div className="mb-2"><b>SĐT:</b> {selected.phone || selected.patient?.phone || "-"}</div>
-                        <div className="mb-2"><b>Email:</b> {selected.patient?.user?.email || "-"}</div>
-                        <div className="mb-2"><b>Ngày sinh:</b> {selected.patient?.dob || "-"}</div>
+                        <div className="mb-2">
+                            <b>Email:</b> {selected.patient?.user?.email || selected.patient?.email || "-"}
+                        </div>
                         <div className="mb-2"><b>Bác sĩ:</b> {selected.doctor?.name || `#${selected.doctor_id}`}</div>
-                        <div className="mb-2"><b>Khoa:</b> {selected.doctor?.department?.name || "-"}</div>
+                        <div className="mb-2"><b>Khoa:</b> {selected.doctor?.department?.name || selected.department?.name || selected.department_name || "-"}</div>
                         <div className="mb-2"><b>Ngày khám:</b> {dayjs(selected.date).format("DD/MM/YYYY")}</div>
                         <div className="mb-2"><b>Giờ khám:</b> {selected.time}</div>
                         <div className="mb-2"><b>Triệu chứng:</b> {selected.symptoms || "-"}</div>
