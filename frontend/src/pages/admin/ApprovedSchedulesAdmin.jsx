@@ -40,18 +40,18 @@ export default function ApprovedSchedulesAdmin() {
                     <div key={dep.id}>
                         <div className="font-semibold text-lg mb-3 text-primary">{dep.name}</div>
                         {grouped[dep.id]?.length ? (
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3 ">
                                 {grouped[dep.id].map(a => (
                                     <div key={a.id} className="card px-4 py-3 flex flex-col gap-1 shadow-sm border border-gray-200">
-                                        <div className="font-semibold text-gray-900 text-base">{a.patient?.name || `Bệnh nhân #${a.patient_id}`}</div>
-                                        <div className="text-sm text-gray-700">
+                                        <div className="font-semibold text-white text-base">{a.patient?.name || `Bệnh nhân #${a.patient_id}`}</div>
+                                        <div className="text-sm text-white">
                                             <span className="font-medium">Bác sĩ:</span> {a.doctor?.name || `#${a.doctor_id}`}
                                         </div>
-                                        <div className="text-sm text-gray-700">
+                                        <div className="text-sm text-white">
                                             <span className="font-medium">Ngày:</span> {dayjs(a.date).format("DD/MM/YYYY")}
                                             <span className="ml-2 font-medium">Giờ:</span> {a.time}
                                         </div>
-                                        <div className="text-xs text-gray-600">
+                                        <div className="text-xs text-white">
                                             <span className="font-medium">Triệu chứng:</span> {a.symptoms || "-"}
                                         </div>
                                         <div className="text-xs text-green-600 font-semibold flex items-center gap-1 mt-1">

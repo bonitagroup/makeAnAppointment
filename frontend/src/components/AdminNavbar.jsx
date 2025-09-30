@@ -34,7 +34,7 @@ export default function AdminNavbar() {
                         text-sm lg:text-base
                         ${isActive("/admin/departments") ? "bg-primary text-white" : "hover:bg-gray-700"}`}
                 >
-                    Quản lý Khoa
+                    Khoa
                 </Link>
                 <Link
                     to="/admin/doctors"
